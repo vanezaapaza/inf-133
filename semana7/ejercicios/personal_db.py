@@ -1,60 +1,58 @@
-# Importar módulo sqlite3
 import sqlite3
 
-# Crear conexión a la base de datos
-conn = sqlite3.connect("personal_db.db")
+conn=sqlite3.connect("personal_db.db")
+
+print("\nEMPLEADOS: INNER JOIN")
+cursor = conn.execute(
+    """SELECT EMPLEADOS.nombre, SALARIOS.salario 
+    FROM SALARIOS
+    JOIN EMPLEADOS ON SALARIOS.empleado_id=EMPLEADOS.id
+    """
+)
+
+for row in cursor:
+    print(row)
 
 conn.execute(
     """
-    CREATE TABLE DEPARTAMENTOS
-    (id INTEGER PRIMARY KEY,
-    nombre TEXT NOT NULL,
-    fecha_creacion TEXT NOT NULL
-    );
+    UPDATE EMPLEADOS
+    SET cargo_id = '3'
+    WHERE id = 2
     """
+)
+conn.execute(
+    """
+    UPDATE SALARIOS
+    SET empleado_id = '1'
+    WHERE id = 1
+    """
+)
+def imprimir ():    
+    print("\nCAMBIAR")
+    imprimir=conn.execute(
+        """
+        SELECT * FROM EMPLEADOS
+        """
     )
+    for row in imprimir:
+        print(row)
+    print("\nEMPLEADOS: INNER JOIN")
+    cursor = conn.execute(
+        """SELECT EMPLEADOS.nombre, SALARIOS.salario 
+        FROM SALARIOS
+        JOIN EMPLEADOS ON SALARIOS.empleado_id=EMPLEADOS.id
+        """
+    )
+
+    for row in cursor:
+        print(row)
+
+print("\nELIMINAR")
 conn.execute(
     """
-    CREATE TABLE CARGOS
-    (id INTEGER PRIMARY KEY,
-    nombre TEXT NOT NULL,
-    nivel TEXT NOT NULL,
-    fecha_creacion TEXT NOT NULL
-    );
-
+    DELETE FROM EMPLEADOS
+    WHERE id = 2
     """
 )
-conn.execute(
-    """
-    CREATE TABLE EMPLEADOS
-    (id INTEGER PRIMARY KEY,
-    nombre TEXT NOT NULL,
-    apellido_paterno TEXT NOT NULL,
-    apellido_materno TEXT NOT NULL,
-    fecha_contratacion DATE NOT NULL,
-    departamento_id INTEGER NOT NULL,
-    cargo_id INTEGER NOT NULL,
-    fecha_creacion TEXT NOT NULL,
-    FOREIGN KEY(departamento_id) REFERENCES DEPARTAMENTOS(id),
-    FOREIGN KEY(cargo_id) REFERENCES CARGOS(id)
-    );
-
-    """
-)
-conn.execute(
-    """
-    CREATE TABLE SALARIOS
-    (id INTEGER PRIMARY KEY,
-    empleado_id INTEGER NOT NULL,
-    salario REAL NOT NULL,
-    fecha_inicio DATE NOT NULL,
-    fecha_fin DATE NOT NULL,
-    fecha_creacion TEXT NOT NULL,
-    FOREIGN KEY(empleado_id) REFERENCES EMPLEADOS(id)
-    );
-    """
-)
-
-
-conn.commit()
+imprimir()
 conn.close()
